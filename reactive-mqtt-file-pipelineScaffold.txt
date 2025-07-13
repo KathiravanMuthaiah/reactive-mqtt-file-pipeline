@@ -1,0 +1,67 @@
+reactive-mqtt-file-pipeline/
+├── reader-springboot/
+│   ├── pom.xml
+│   ├── Dockerfile
+│   ├── src/
+│   │   ├── main/java/com/bauto/spring/reader/
+│   │   │   ├── ReaderSpringbootApplication.java
+│   │   │   ├── config/MqttConfig.java
+│   │   │   ├── model/LineData.java
+│   │   │   ├── repository/LineDataRepository.java
+│   │   │   ├── service/
+│   │   │   │   ├── FileProcessingService.java
+│   │   │   │   ├── MqttPublisherService.java
+│   │   │   │   └── SummaryJdbcWriter.java
+│   │   │   └── util/LineTransformer.java
+│   │   ├── resources/application.yml
+│   │   └── resources/logback-spring.xml
+│   └── test/java/com/bauto/spring/reader/ReaderSpringbootApplicationTests.java
+├── reader-quarkus/
+│   ├── pom.xml
+│   ├── Dockerfile
+│   ├── src/
+│   │   ├── main/java/com/bauto/quarkus/reader/
+│   │   │   ├── ReaderQuarkusApplication.java
+│   │   │   ├── config/MqttConfig.java
+│   │   │   ├── model/LineData.java
+│   │   │   ├── repository/LineDataRepository.java
+│   │   │   ├── service/
+│   │   │   │   ├── FileProcessingService.java
+│   │   │   │   ├── MqttPublisherService.java
+│   │   │   │   └── SummaryJdbcWriter.java
+│   │   │   └── util/LineTransformer.java
+│   │   ├── resources/application.properties
+│   │   └── resources/logging.properties
+│   └── test/java/com/bauto/quarkus/reader/ReaderQuarkusApplicationTests.java
+├── writer-springboot/
+│   ├── pom.xml
+│   ├── Dockerfile
+│   ├── src/
+│   │   ├── main/java/com/bauto/spring/writer/
+│   │   │   ├── WriterSpringbootApplication.java
+│   │   │   ├── config/MqttConfig.java
+│   │   │   ├── service/
+│   │   │   │   ├── MqttSubscriberService.java
+│   │   │   │   └── AsyncFileWriterService.java
+│   │   │   └── util/FileWriterHelper.java
+│   │   ├── resources/application.yml
+│   │   └── resources/logback-spring.xml
+│   └── test/java/com/bauto/spring/writer/WriterSpringbootApplicationTests.java
+├── writer-quarkus/
+│   ├── pom.xml
+│   ├── Dockerfile
+│   ├── src/
+│   │   ├── main/java/com/bauto/quarkus/writer/
+│   │   │   ├── WriterQuarkusApplication.java
+│   │   │   ├── config/MqttConfig.java
+│   │   │   ├── service/
+│   │   │   │   ├── MqttSubscriberService.java
+│   │   │   │   └── AsyncFileWriterService.java
+│   │   │   └── util/FileWriterHelper.java
+│   │   ├── resources/application.properties
+│   │   └── resources/logging.properties
+│   └── test/java/com/bauto/quarkus/writer/WriterQuarkusApplicationTests.java
+└── .vscode/
+    ├── settings.json
+    └── launch.json
+

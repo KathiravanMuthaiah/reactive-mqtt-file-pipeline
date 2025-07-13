@@ -1,0 +1,32 @@
+{
+  "folders": [
+    {
+      "name": "reader-springboot",
+      "path": "reader-springboot"
+    },
+    {
+      "name": "writer-springboot",
+      "path": "writer-springboot"
+    },
+    {
+      "name": "reader-quarkus",
+      "path": "reader-quarkus"
+    },
+    {
+      "name": "writer-quarkus",
+      "path": "writer-quarkus"
+    },
+    {
+      "name": "reactive-project",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.format.settings.profile": "GoogleStyle",
+    "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "java.compile.nullAnalysis.mode": "disabled"
+  }
+}

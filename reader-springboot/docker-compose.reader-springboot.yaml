@@ -1,0 +1,12 @@
+
+services:
+  reader-springboot:
+    container_name: reader-springboot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8081:8081"
+    restart: unless-stopped

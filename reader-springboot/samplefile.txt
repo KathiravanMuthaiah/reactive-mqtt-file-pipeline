@@ -1,0 +1,4 @@
+This is the first line
+this is the second line
+we can look at all lines
+we need to close the file
