@@ -46,7 +46,7 @@ public class MqttPublisherService {
       MqttMessage mqttMessage = new MqttMessage(message.getBytes());
       mqttMessage.setQos(1);
       mqttClient.publish(topic, mqttMessage);
-      log.debug("Published message to MQTT topic '{}': {}", topic, message);
+      log.info("Published message to MQTT topic '{}': {}", topic, message);
     } catch (MqttException e) {
       log.error("Failed to publish message to MQTT", e);
     }

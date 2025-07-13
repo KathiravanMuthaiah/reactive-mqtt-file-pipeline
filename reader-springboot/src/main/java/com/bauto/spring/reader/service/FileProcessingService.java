@@ -41,11 +41,12 @@ public class FileProcessingService {
           reader -> Flux.fromStream(reader.lines()), CloseableUtils.safeCloser())
           .subscribeOn(Schedulers.boundedElastic()).map(String::trim)
           .filter(line -> !line.isEmpty()).doOnNext(rawLine -> {
-            // Save to DB (JPA)
-            lineDataRepository.save(new LineData(rawLine));
 
             // Transform line
             String transformed = LineTransformer.appendSum(rawLine);
+
+            // Save to DB (JPA)
+            lineDataRepository.save(new LineData(rawLine, transformed));
 
             // Publish to MQTT
             mqttPublisherService.publish(transformed);
@@ -57,8 +58,7 @@ public class FileProcessingService {
             summaryJdbcWriter.writeSummary(filePath.getFileName().toString(), lineCounter.get());
           }).doOnError(e -> log.error("Error during file processing", e)).subscribe();
     } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      log.error("failed to process file" + filePath, e);
     }
   }
 }

@@ -1,0 +1,9 @@
+server:
+  port: 8082
+
+mqtt:
+  broker: tcp://${MQTT_BROKER_HOST:localhost}:1883
+  topic: ${MQTT_TOPIC:file.processed.line}
+
+output:
+  path: ${OUTPUT_FILE_PATH:./output/output.txt}

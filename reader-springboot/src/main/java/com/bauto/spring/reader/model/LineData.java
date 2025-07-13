@@ -1,50 +1,60 @@
 package com.bauto.spring.reader.model;
 
 import jakarta.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "line_data")
+@Table(name = "line_data", schema = "fileproc")
 public class LineData {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "raw_line", nullable = false)
-  private String rawLine;
+  @Column(name = "original_line", nullable = false, columnDefinition = "TEXT")
+  private String originalLine;
 
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private Instant createdAt;
+  @Column(name = "transformed_line", nullable = false, columnDefinition = "TEXT")
+  private String transformedLine;
+
+  @Column(name = "created_at", nullable = false)
+  private LocalDateTime createdAt;
 
   public LineData() {
-    // Default constructor for JPA
+    // default constructor for JPA
   }
 
-  public LineData(String rawLine) {
-    this.rawLine = rawLine;
-    this.createdAt = Instant.now();
+  public LineData(String originalLine, String transformedLine) {
+    this.originalLine = originalLine;
+    this.transformedLine = transformedLine;
+    this.createdAt = LocalDateTime.now();
   }
-
-  // Getters and Setters
 
   public Long getId() {
     return id;
   }
 
-  public String getRawLine() {
-    return rawLine;
+  public String getOriginalLine() {
+    return originalLine;
   }
 
-  public void setRawLine(String rawLine) {
-    this.rawLine = rawLine;
+  public void setOriginalLine(String originalLine) {
+    this.originalLine = originalLine;
   }
 
-  public Instant getCreatedAt() {
+  public String getTransformedLine() {
+    return transformedLine;
+  }
+
+  public void setTransformedLine(String transformedLine) {
+    this.transformedLine = transformedLine;
+  }
+
+  public LocalDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(Instant createdAt) {
+  public void setCreatedAt(LocalDateTime createdAt) {
     this.createdAt = createdAt;
   }
 }

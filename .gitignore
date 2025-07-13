@@ -57,6 +57,7 @@ target/
 .gradle/
 build/
 out/
+output/
 
 # Keep prometheus agent
 !jmx_prometheus_javaagent-0.18.0.jar

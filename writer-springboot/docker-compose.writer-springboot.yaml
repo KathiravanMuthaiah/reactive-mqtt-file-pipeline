@@ -1,0 +1,27 @@
+
+services:
+  writer-springboot:
+    container_name: writer-springboot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8082:8082"
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    environment:
+      - ${MQTT_BROKER_HOST:-host.docker.internal}
+      - ${MQTT_BROKER_PORT:-1883}
+      - ${MQTT_TOPIC:-file.processed.line}
+      - OUTPUT_FILE_PATH=./output/output.txt
+    volumes:
+      - ./docker-volume/output:/app/output
+      - ./docker-volume/logs:/app/logs
+    networks:
+      - bankingnet
+      
+networks:
+  bankingnet:
+    external: true

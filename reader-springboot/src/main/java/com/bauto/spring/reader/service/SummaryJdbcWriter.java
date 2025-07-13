@@ -17,7 +17,7 @@ public class SummaryJdbcWriter {
   }
 
   public void writeSummary(String fileName, int lineCount) {
-    String sql = "INSERT INTO file_summary (file_name, lines_processed) VALUES (?, ?)";
+    String sql = "INSERT INTO fileproc.file_summary (file_name, total_lines) VALUES (?, ?)";
     try {
       jdbcTemplate.update(sql, fileName, lineCount);
       log.info("Inserted summary row for file: {}, lines: {}", fileName, lineCount);
