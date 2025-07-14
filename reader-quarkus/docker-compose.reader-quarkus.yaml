@@ -1,0 +1,22 @@
+
+services:
+  reader-quarkus:
+    container_name: reader-quarkus
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    env_file:
+      - .env
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    volumes:
+      - ./docker-volume/logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - bankingnet
+
+networks:
+  bankingnet:
+    external: true

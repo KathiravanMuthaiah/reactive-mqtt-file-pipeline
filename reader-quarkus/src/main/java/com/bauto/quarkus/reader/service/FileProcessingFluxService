@@ -1,0 +1,69 @@
+package com.bauto.quarkus.reader.service;
+
+import com.bauto.quarkus.reader.model.LineData;
+import com.bauto.quarkus.reader.repository.LineDataRepository;
+import com.bauto.quarkus.reader.util.LineTransformer;
+import jakarta.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.jboss.logging.Logger;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicInteger;
+
+@ApplicationScoped
+public class FileProcessingFluxService {
+
+    private static final Logger log = Logger.getLogger(FileProcessingService.class);
+
+    private final LineDataRepository lineDataRepository;
+    private final MqttPublisherService mqttPublisherService;
+    private final SummaryJdbcWriter summaryJdbcWriter;
+
+    public FileProcessingService(LineDataRepository lineDataRepository,
+                                 MqttPublisherService mqttPublisherService,
+                                 SummaryJdbcWriter summaryJdbcWriter) {
+        this.lineDataRepository = lineDataRepository;
+        this.mqttPublisherService = mqttPublisherService;
+        this.summaryJdbcWriter = summaryJdbcWriter;
+    }
+
+    public void processFile(Path filePath) {
+        log.infof("Starting processing of file: %s", filePath);
+
+        AtomicInteger lineCounter = new AtomicInteger();
+
+        try {
+            Flux.using(
+                    () -> new BufferedReader(new FileReader(filePath.toFile())),
+                    reader -> Flux.fromStream(reader.lines()),
+                    reader -> { reader.close(); }
+            )
+            .subscribeOn(Schedulers.boundedElastic())
+            .map(String::trim)
+            .filter(line -> !line.isEmpty())
+            .doOnNext(rawLine -> {
+                String transformed = LineTransformer.appendSum(rawLine);
+
+                // Save to DB (JPA)
+                lineDataRepository.persist(new LineData(rawLine, transformed));
+
+                // Publish to MQTT
+                mqttPublisherService.publish(transformed);
+
+                lineCounter.incrementAndGet();
+            })
+            .doOnComplete(() -> {
+                log.infof("Completed processing file: %s | %d lines", filePath.getFileName(), lineCounter.get());
+                summaryJdbcWriter.writeSummary(filePath.getFileName().toString(), lineCounter.get());
+            })
+            .doOnError(e -> log.error("Error during file processing", e))
+            .subscribe();
+        } catch (Exception e) {
+            log.errorf("Failed to process file: %s", filePath, e);
+        }
+    }
+}

@@ -8,13 +8,15 @@ spring:
     password: ${POSTGRES_PASSWORD:secret}
     driver-class-name: org.postgresql.Driver
   jpa:
+    show-sql: true
     hibernate:
       ddl-auto: update
     properties:
       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate.format_sql: true
 
       
 
 mqtt:
   broker: tcp://${MQTT_BROKER_HOST:localhost}:1883
-  topic: file.processed.line
+  topic: ${MQTT_TOPIC:file.processed.line}

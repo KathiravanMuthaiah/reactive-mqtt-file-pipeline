@@ -1,0 +1,42 @@
+quarkus:
+  http:
+    port: 8083
+
+  datasource:
+    db-kind: postgresql
+    username: ${POSTGRES_USER:logisticadmin}
+    password: ${POSTGRES_PASSWORD:secret}
+    jdbc:
+      url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:logisticdb}
+
+  hibernate-orm:
+    database:
+      generation: none
+    dialect: org.hibernate.dialect.PostgreSQLDialect
+    log:
+      sql: true
+  log:
+    console:
+      json: false
+      format: '%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{2.}] (%t) %s%e%n'
+    file:
+      json: false
+      format: '%d{yyyy-MM-dd HH:mm:ss} %-5p [%c{2.}] (%t) %s%e%n'
+      rotation:
+        max-file-size: 10M
+        max-backup-index: 5
+      enable: true
+      path: logs/app.log
+    level: WARN
+    category:
+      "com.bauto.quarkus.reader":
+        level: INFO
+      "org.hibernate.SQL":
+        level: DEBUG
+      "org.hibernate.type.descriptor.sql":
+        level: DEBUG
+mqtt:
+  broker: tcp://${MQTT_BROKER_HOST:localhost}:1883
+  topic: ${MQTT_TOPIC:file.processed.line}
+
+

@@ -29,12 +29,11 @@ public class StandaloneFileProcessing {
     try {
       Flux.using(() -> new BufferedReader(new FileReader(filePath.toFile())),
           reader -> Flux.fromStream(reader.lines()), CloseableUtils.safeCloser())
-          // .subscribeOn(Schedulers.boundedElastic()).map(String::trim)
-          // .filter(line -> !line.isEmpty())
-          .doOnNext(rawLine -> {
+          .subscribeOn(Schedulers.boundedElastic()).map(String::trim)
+          .filter(line -> !line.isEmpty()).doOnNext(rawLine -> {
             // Transform line
-            // String transformed = LineTransformer.appendSum(rawLine);
-            System.out.println("transformed line:" + rawLine);
+            String transformed = LineTransformer.appendSum(rawLine);
+            System.out.println("transformed line:" + transformed);
             lineCounter.incrementAndGet();
           }).doOnComplete(() -> {
             System.out.println("Completed processing file: " + filePath.getFileName() + "| "

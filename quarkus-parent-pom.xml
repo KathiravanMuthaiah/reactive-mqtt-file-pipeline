@@ -39,5 +39,26 @@
         </plugin>
       </plugins>
     </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <release>${java.version}</release>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+        <version>${quarkus.platform.version}</version>
+        <configuration>
+          <enforceBuildGoal>false</enforceBuildGoal>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>

@@ -1,0 +1,67 @@
+package com.bauto.quarkus.reader.service;
+
+import com.bauto.quarkus.reader.model.LineData;
+import com.bauto.quarkus.reader.repository.LineDataRepository;
+import com.bauto.quarkus.reader.util.LineTransformer;
+import com.bauto.quarkus.reader.util.CloseableUtils;
+import jakarta.enterprise.context.ApplicationScoped;
+import org.jboss.logging.Logger;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicInteger;
+
+@ApplicationScoped
+public class FileProcessingPlainService {
+
+    private static final Logger log = Logger.getLogger(FileProcessingService.class);
+
+    private final LineDataRepository lineDataRepository;
+    private final MqttPublisherService mqttPublisherService;
+    private final SummaryJdbcWriter summaryJdbcWriter;
+
+    public FileProcessingService(LineDataRepository lineDataRepository,
+                                 MqttPublisherService mqttPublisherService,
+                                 SummaryJdbcWriter summaryJdbcWriter) {
+        this.lineDataRepository = lineDataRepository;
+        this.mqttPublisherService = mqttPublisherService;
+        this.summaryJdbcWriter = summaryJdbcWriter;
+    }
+
+    public void processFile(Path filePath) {
+        log.infof("Starting processing of file: %s", filePath);
+
+        AtomicInteger lineCounter = new AtomicInteger();
+
+        if (!Files.exists(filePath)) {
+            log.errorf("File does not exist: %s", filePath);
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath.toFile()))) {
+            String rawLine;
+            while ((rawLine = reader.readLine()) != null) {
+                rawLine = rawLine.trim();
+                if (rawLine.isEmpty()) continue;
+
+                String transformed = LineTransformer.appendSum(rawLine);
+
+                // Persist via Panache
+                lineDataRepository.persist(new LineData(rawLine, transformed));
+
+                // Publish to MQTT
+                mqttPublisherService.publish(transformed);
+
+                lineCounter.incrementAndGet();
+            }
+
+            summaryJdbcWriter.writeSummary(filePath.getFileName().toString(), lineCounter.get());
+            log.infof("Completed processing %d lines from %s", lineCounter.get(), filePath);
+
+        } catch (Exception e) {
+            log.errorf("Failed to process file %s", filePath, e);
+        }
+    }
+}
