@@ -82,4 +82,14 @@ Or via Docker:
 docker-compose -f ../docker-compose.reader-springboot.yaml up
 ```
 
-License: MIT
+📖 **Resources**
+
+[**Reactive File Processing with MQTT: Spring Boot vs Quarkus Series**](https://kathiravanmuthaiah.com/posts/reactive_springboot_vs_quarkus_part1/)
+
+## 🏷️ Tags
+`Spring Boot`. `Quarkus`. `Mutiny`. `Project Reactor`. `Reactive Streams`. `MQTT`. `Microservices`
+
+---
+
+## 📜 License
+This project is licensed under the [MIT License](LICENSE) – free to use for learning and educational purposes.
